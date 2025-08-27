@@ -3,6 +3,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { User } from "../model/model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { AuthenticatedRequest } from "../middleware/validateAuth.js";
 
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
@@ -67,3 +68,21 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     token,
   });
 });
+
+export const getUserProfile = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const user = req.user;
+
+    if (!user) {
+      res.status(404).json({
+        message: "User not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "User profile retrieved successfully",
+      user,
+    });
+  }
+);
