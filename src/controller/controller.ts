@@ -86,3 +86,41 @@ export const getUserProfile = asyncHandler(
     });
   }
 );
+
+export const addToPlayList = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user?._id;
+
+    const songId = req.params.id;
+    if (!songId) {
+      res.status(404).json({ message: "please provide song id" });
+      return;
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).json({
+        message: "No user with this id",
+      });
+    }
+
+    if (user?.playList.includes(songId)) {
+      const index = user.playList.indexOf(req.params.id as string);
+
+      user.playList.splice(index, 1);
+
+      await user.save();
+
+      res.json({
+        message: "Removed from playlist",
+      });
+      return;
+    }
+
+    user?.playList.push(songId);
+    await user?.save();
+    res.status(200).json({ message: "Added to the Playlist" });
+    return;
+  }
+);

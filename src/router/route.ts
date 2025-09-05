@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  addToPlayList,
   getUserProfile,
   loginUser,
   registerUser,
@@ -11,6 +12,7 @@ const router = Router();
 router
   .post("/user/register", registerUser)
   .post("/user/login", loginUser)
-  .get("/user/me", isAuth, getUserProfile);
+  .get("/user/me", isAuth, getUserProfile)
+  .post("/song/:id", isAuth, addToPlayList);
 
 export default router;
